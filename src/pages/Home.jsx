@@ -1,23 +1,28 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import Spinner from '../components/Spinner'
-import { Link } from 'react-router-dom'
-import { AiOutlineEdit } from 'react-icons/ai'
-import { BsInfoCircle } from 'react-icons/bs'
-import { MdOutlineAddBox, MdOutlineDelete } from 'react-icons/md'
+import BooksCard from '../components/home/BooksCard'
+import BooksTable from '../components/home/BooksTable'
+import CardNav from '../components/CardNav'
+import bookwaveLogo from '../assets/bookwave-logo.svg'
+import { cacheBookPdf } from '../utils/bookPdfStorage'
+import { buildApiUrl } from '../config/api'
+
 
 const Home = () => {
 
     const [books, setBooks] = useState([])
     const [loading, setLoading] = useState(false)
+    const [showType, setShowType] = useState('table')
 
     useEffect(() => {
         setLoading(true);
         axios
-            .get('http://localhost:5000/books')
+            .get(buildApiUrl('/books'))
             .then((res) => {
                 // console.log("Full Response:", res)
                 setBooks(res.data);
+                res.data.forEach((book) => cacheBookPdf(book));
                 setLoading(false);
             })
             .catch((err) => {
@@ -26,67 +31,66 @@ const Home = () => {
             });
     }, [])
 
+    const navItems = [
+        {
+            label: 'Browse',
+            bgColor: '#8A244B',
+            textColor: '#FFF1F5',
+            links: [
+                { label: 'Table View', ariaLabel: 'Switch to table view', onClick: () => setShowType('table') },
+                { label: 'Card View', ariaLabel: 'Switch to card view', onClick: () => setShowType('card') }
+            ]
+        },
+        {
+            label: 'Current View',
+            bgColor: '#D02752',
+            textColor: '#FFF1F5',
+            links: [
+                { label: showType === 'table' ? 'Table Active' : 'Card Active', ariaLabel: 'Current active view' },
+                { label: `${books.length} Books Loaded`, ariaLabel: 'Book count' }
+            ]
+        },
+        {
+            label: 'Create',
+            bgColor: '#F63049',
+            textColor: '#FFF1F5',
+            links: [
+                { label: 'Add New Book', ariaLabel: 'Add a new book', to: '/books/create' },
+                { label: 'Open Form', ariaLabel: 'Open the create book form', to: '/books/create' }
+            ]
+        }
+    ]
+
     return (
-        <div className='p-4'>
-            <div className="flex justify-between items-center">
-                <h1 className="text-3xl my-8">Books list</h1>
-                <Link to='/books/create'>
-                    <MdOutlineAddBox className='text-4xl text-sky-800' />
-                </Link>
+        <div className='fade-in'>
+            <div className="relative z-[120] mb-8 flex flex-col gap-5 rounded-4xl border border-[color:var(--tone-border)] bg-[rgba(17,31,53,0.84)] p-4 shadow-2xl backdrop-blur-xl md:p-6">
+                <CardNav
+                    logo={bookwaveLogo}
+                    logoAlt="Bookwave Logo"
+                    items={navItems}
+                    baseColor="#111F35"
+                    menuColor="#FFF1F5"
+                    buttonBgColor="#F63049"
+                    buttonTextColor="#FFF1F5"
+                    ease="back.out(1.7)"
+                />
+                <div className='px-2'>
+                    <p className='mb-2 text-sm uppercase tracking-[0.32em] text-[var(--tone-muted)]'>Personal Library</p>
+                    <h1 className="text-4xl font-semibold tracking-tight text-[var(--tone-text)]">Books List</h1>
+                    <p className='mt-3 max-w-2xl text-sm text-[var(--tone-muted)]'>
+                        Open the menu to switch between animated table and card layouts or jump straight into adding a new book.
+                    </p>
+                </div>
             </div>
 
             {loading ? (
-                <Spinner />
-            ) : (
-                <table className='w-full border-separate border-spacing-2'>
-                    <thead>
-                        <tr>
-                            <th className='border border-slate-600 rounded-md'>No</th>
-                            <th className='border border-slate-600 rounded-md'>Title</th>
-                            <th className='border border-slate-600 rounded-md max-md:hidden'>
-                                Author
-                            </th>
-                            <th className='border border-slate-600 rounded-md max-md:hidden'>
-                                Publish Year
-                            </th>
-                            <th className='border border-slate-600 rounded-md'>Operations</th>
-
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {books?.map((book, index) => (
-                            <tr key={book._id} className='h-8'>
-                                <td className='border border-slate-700 rounded-md text-center'>
-                                    {index + 1}
-                                </td>
-                                <td className='border border-slate-700 rounded-md text-center'>
-                                    {book.title}
-                                </td>
-                                <td className='border border-slate-700 rounded-md text-center max-md:hidden'>
-                                    {book.author}
-                                </td>
-                                <td className='border border-slate-700 rounded-md text-center max-md:hidden'>
-                                    {book.publishYear}
-                                </td>
-                                <td className='border border-slate-700 rounded-md text-center'>
-                                    <div className='flex justify-center gap-x-4'>
-                                        <Link to={`/books/details/${book._id}`}>
-                                            <BsInfoCircle className='text-2xl text-green-800' />
-                                        </Link>
-                                        <Link to={`/books/edit/${book._id}`}>
-                                            <AiOutlineEdit className='text-2xl text-yellow-800' />
-                                        </Link>
-                                        <Link to={`/books/delete/${book._id}`}>
-                                            <MdOutlineDelete className='text-2xl text-red-800' />
-                                        </Link>
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                <Spinner />) : showType === 'table' ? (
+                    <BooksTable books={books} />
+                ) : (
+                <div className='relative z-0'>
+                    <BooksCard books={books} />
+                </div>
             )}
-
         </div>
     )
 }

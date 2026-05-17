@@ -8,8 +8,10 @@ const BackButton = ({ destination = '/' }) => {
         <div className='flex'>
             <Link
                 to={destination}
-                className='bg-sky-800 text-white px-4 py-1 rounded-lg w-fit'>
+                className='btn-secondary inline-flex items-center gap-2 rounded-2xl px-4 py-2 font-medium shadow-lg'
+            >
                 <BsArrowLeft className='text-2xl' />
+                Back
             </Link>
         </div>
     )
