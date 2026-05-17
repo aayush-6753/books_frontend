@@ -49,6 +49,18 @@ const ShowBook = () => {
                             <span className="min-w-[10rem] text-lg font-medium text-[var(--tone-muted)]">Publish Year</span>
                             <span className="text-xl">{book.publishYear || '-'}</span>
                         </div>
+                        <div className="flex flex-col gap-3 md:flex-row md:items-start">
+                            <span className="min-w-[10rem] text-lg font-medium text-[var(--tone-muted)]">Cover Image</span>
+                            {book.bookImage ? (
+                                <img
+                                    src={book.bookImage}
+                                    alt={book.imageName || `${book.title} cover`}
+                                    className="h-48 w-36 rounded-2xl border border-[color:var(--tone-border)] object-cover shadow-lg"
+                                />
+                            ) : (
+                                <span className="text-sm text-[var(--tone-muted)]">No image uploaded</span>
+                            )}
+                        </div>
                         <div className="flex flex-col gap-3 md:flex-row md:items-center">
                             <span className="min-w-[10rem] text-lg font-medium text-[var(--tone-muted)]">Read Book</span>
                             {book.bookPdf ? (

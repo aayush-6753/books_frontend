@@ -55,8 +55,8 @@ const Home = () => {
             bgColor: '#F63049',
             textColor: '#FFF1F5',
             links: [
-                { label: 'Add New Book', ariaLabel: 'Add a new book', to: '/books/create' },
-                { label: 'Open Form', ariaLabel: 'Open the create book form', to: '/books/create' }
+                { label: 'Upload PDF', ariaLabel: 'Open the create book form for PDF upload', to: '/books/create?upload=pdf' },
+                { label: 'Upload Image', ariaLabel: 'Open the create book form for image upload', to: '/books/create?upload=image' }
             ]
         }
     ]
@@ -77,9 +77,7 @@ const Home = () => {
                 <div className='px-2'>
                     <p className='mb-2 text-sm uppercase tracking-[0.32em] text-[var(--tone-muted)]'>Personal Library</p>
                     <h1 className="text-4xl font-semibold tracking-tight text-[var(--tone-text)]">Books List</h1>
-                    <p className='mt-3 max-w-2xl text-sm text-[var(--tone-muted)]'>
-                        Open the menu to switch between animated table and card layouts or jump straight into adding a new book.
-                    </p>
+                    <p className='mt-3 max-w-2xl text-sm text-[var(--tone-muted)]'></p>
                 </div>
             </div>
 

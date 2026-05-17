@@ -14,8 +14,8 @@ const BooksTable = ({ books }) => {
         <div className='card-glass overflow-hidden rounded-4xl border border-[color:var(--tone-border)] p-4 shadow-2xl'>
             <div className='mb-4 flex flex-wrap items-center justify-between gap-3 px-2'>
                 <div>
-                    <p className='text-sm font-semibold uppercase tracking-[0.28em] text-[var(--tone-muted)]'>Animated Table View</p>
-                    <p className='text-sm text-[var(--tone-muted)]'>Use hover, arrow keys, or enter to move through your books.</p>
+                    <p className='text-sm font-semibold uppercase tracking-[0.28em] text-[var(--tone-muted)]'>Table View</p>
+                    <p className='text-sm text-[var(--tone-muted)]'></p>
                 </div>
                 <div className='rounded-full border border-[color:var(--tone-border)] bg-[rgba(17,31,53,0.72)] px-4 py-2 text-sm text-[var(--tone-text)]'>
                     {bookLabels.length} books

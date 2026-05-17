@@ -20,7 +20,7 @@ const BooksCard = ({ books }) => {
             {books.map((book) => (
                 <div key={book._id} className='min-h-70'>
                     <TiltedCard
-                        imageSrc={transparentCardImage}
+                        imageSrc={book.bookImage || transparentCardImage}
                         altText={`${book.title} card`}
                         captionText={`${book.title} - ${book.author}`}
                         containerHeight="100%"

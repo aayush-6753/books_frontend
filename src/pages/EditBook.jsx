@@ -20,6 +20,8 @@ const EditBook = () => {
     const [publishYear, setPublishYear] = useState('');
     const [bookPdf, setBookPdf] = useState('');
     const [pdfName, setPdfName] = useState('');
+    const [bookImage, setBookImage] = useState('');
+    const [imageName, setImageName] = useState('');
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { id } = useParams();
@@ -34,6 +36,8 @@ const EditBook = () => {
                 setPublishYear(res.data.publishYear || '');
                 setBookPdf(res.data.bookPdf || '');
                 setPdfName(res.data.pdfName || '');
+                setBookImage(res.data.bookImage || '');
+                setImageName(res.data.imageName || '');
                 setLoading(false);
             }).catch((err) => {
                 setLoading(false);
@@ -64,12 +68,35 @@ const EditBook = () => {
         }
     }
 
+    const handleImageChange = async (e) => {
+        const file = e.target.files?.[0]
+        if (!file) {
+            return
+        }
+
+        if (!file.type.startsWith('image/')) {
+            alert('Please upload an image file.')
+            e.target.value = ''
+            return
+        }
+
+        try {
+            const dataUrl = await readFileAsDataUrl(file)
+            setBookImage(dataUrl)
+            setImageName(file.name)
+        } catch (error) {
+            console.error(error)
+            alert('Unable to read the image file. Please try again.')
+        }
+    }
+
     const handleEditBook = () => {
         const data = {
             title,
             author,
             ...(publishYear.trim() ? { publishYear } : {}),
-            ...(bookPdf ? { bookPdf, pdfName } : {})
+            ...(bookPdf ? { bookPdf, pdfName } : {}),
+            ...(bookImage ? { bookImage, imageName } : {})
         }
         setLoading(true);
         axios
@@ -130,6 +157,23 @@ const EditBook = () => {
                             className='input-soft'
                         />
                         <p className="text-sm text-[var(--tone-muted)]">{pdfName || 'No PDF uploaded yet.'}</p>
+                    </div>
+                    <div className="space-y-2">
+                        <label className="block text-sm font-medium text-[var(--tone-muted)]">Book Image</label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className='input-soft'
+                        />
+                        <p className="text-sm text-[var(--tone-muted)]">{imageName || 'No image uploaded yet.'}</p>
+                        {bookImage ? (
+                            <img
+                                src={bookImage}
+                                alt={imageName || 'Book preview'}
+                                className="mt-3 h-44 w-32 rounded-2xl border border-[color:var(--tone-border)] object-cover shadow-lg"
+                            />
+                        ) : null}
                     </div>
                 </div>
                 <button className="btn-primary mt-8 w-full px-6 py-3 text-lg font-semibold" onClick={handleEditBook}>Save Changes</button>
